@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تحميل تيك توك</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+body {
+    background: #1e1e1e;
+    color: #ddd;
+    font-family: Arial;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background: #3a3a3a;
+    color: white;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #555;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #777;
+}
+
+#status {
+    margin-top: 15px;
+    font-size: 14px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <i class="fa-solid fa-link"></i>
+    </div>
+
+    <p>الصق هنا رابط المقطع</p>
+
+    <input type="text" id="url">
+
+    <button onclick="download()">
+        <i class="fa-solid fa-download"></i>
+        تحميل
+    </button>
+
+    <div id="status"></div>
+</div>
+
+<script>
+async function download() {
+    const url = document.getElementById("url").value;
+    const status = document.getElementById("status");
+
+    status.innerText = "جاري تحميل المقطع";
+
+    try {
+        const res = await fetch("/download", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({url: url})
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            status.innerText = "تم التحميل";
+            window.location.href = "/get/" + data.file;
+        } else {
+            status.innerText = "فشل التحميل";
+        }
+
+    } catch {
+        status.innerText = "خطأ";
+    }
+}
+</script>
+
+</body>
+</html>
