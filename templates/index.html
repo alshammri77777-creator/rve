@@ -1,121 +1,86 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحميل تيك توك</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: #1e1e1e;
-            color: #ddd;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+<meta charset="UTF-8">
+<title>تحميل تيك توك</title>
 
-        .container {
-            background: #2a2a2a;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-        .icon-box {
-            font-size: 40px;
-            margin-bottom: 10px;
-            color: #ff0050;
-        }
+<style>
+body {
+    background: #1e1e1e;
+    color: #ddd;
+    font-family: Arial;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-        input {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            background: #3a3a3a;
-            color: white;
-            box-sizing: border-box;
-        }
+.container {
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            background: #ff0050;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-        }
+input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background: #3a3a3a;
+    color: white;
+}
 
-        button:hover {
-            background: #d60046;
-        }
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #555;
+    color: white;
+    cursor: pointer;
+}
 
-        #status {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #bbb;
-        }
+button:hover {
+    background: #777;
+}
 
-        #videoContainer {
-            margin-top: 20px;
-            display: none;
-        }
+#status {
+    margin-top: 15px;
+    font-size: 14px;
+}
+</style>
 
-        video {
-            width: 100%;
-            border-radius: 8px;
-            border: 2px solid #3a3a3a;
-        }
-    </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="icon-box">
-        <i class="fa-solid fa-video"></i>
+    <div>
+        <i class="fa-solid fa-link"></i>
     </div>
 
     <p>الصق هنا رابط المقطع</p>
 
-    <input type="text" id="url" placeholder="https://www.tiktok.com/...">
+    <input type="text" id="url">
 
-    <button onclick="downloadVideo()">
+    <button onclick="download()">
         <i class="fa-solid fa-download"></i>
-        تحميل وعرض
+        تحميل
     </button>
 
     <div id="status"></div>
-
-    <div id="videoContainer">
-        <video id="player" controls></video>
-        <p style="font-size: 12px; margin-top: 10px;">المقطع جاهز للمشاهدة</p>
-    </div>
 </div>
 
 <script>
-async function downloadVideo() {
+async function download() {
     const url = document.getElementById("url").value;
     const status = document.getElementById("status");
-    const videoContainer = document.getElementById("videoContainer");
-    const player = document.getElementById("player");
 
-    if (!url) {
-        status.innerText = "يرجى وضع رابط أولاً";
-        return;
-    }
-
-    status.innerText = "جاري معالجة وتحميل المقطع...";
-    videoContainer.style.display = "none";
+    status.innerText = "جاري تحميل المقطع";
 
     try {
         const res = await fetch("/download", {
@@ -127,18 +92,14 @@ async function downloadVideo() {
         const data = await res.json();
 
         if (data.success) {
-            status.innerText = "تم التحميل بنجاح!";
-            
-            // تحديث مصدر الفيديو وعرض المشغل
-            player.src = "/get/" + data.file;
-            videoContainer.style.display = "block";
-            player.load(); // إعادة تحميل المشغل بالمصدر الجديد
+            status.innerText = "تم التحميل";
+            window.location.href = "/get/" + data.file;
         } else {
-            status.innerText = "فشل التحميل: " + (data.error || "خطأ غير معروف");
+            status.innerText = "فشل التحميل";
         }
 
-    } catch (err) {
-        status.innerText = "حدث خطأ في الاتصال";
+    } catch {
+        status.innerText = "خطأ";
     }
 }
 </script>
