@@ -77,7 +77,7 @@ def get_file(filename):
     path = os.path.join(DOWNLOAD_FOLDER, filename)
 
     if os.path.exists(path):
-        return send_file(path, as_attachment=True)
+        return send_file(path, as_attachment=False) # تم تغييرها لتعرض في المتصفح
 
     return "الملف غير موجود", 404
 
