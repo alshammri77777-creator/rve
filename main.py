@@ -11,14 +11,16 @@ app.secret_key = secrets.token_hex(16)
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
+# ربط الملفات بالجلسات
 downloads_map = {}
 
+# حذف الملف بعد 10 دقائق
 def delete_file_later(path, filename, delay=600):
     def task():
         time.sleep(delay)
         if os.path.exists(path):
             os.remove(path)
-            print(f" تم حذف: {filename}")
+            print(f"[+] تم حذف: {filename}")
         if filename in downloads_map:
             del downloads_map[filename]
 
@@ -49,7 +51,8 @@ def download():
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
-            
+
+        # إنشاء session للمستخدم
         if "id" not in session:
             session["id"] = secrets.token_hex(8)
 
@@ -77,7 +80,7 @@ def get_file(filename):
     path = os.path.join(DOWNLOAD_FOLDER, filename)
 
     if os.path.exists(path):
-        return send_file(path, as_attachment=False) # تم تغييرها لتعرض في المتصفح
+        return send_file(path, as_attachment=True)
 
     return "الملف غير موجود", 404
 
